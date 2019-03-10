@@ -78,7 +78,7 @@ void order(ostream& out, const vector<TVS>& M) {
             local.push_back(pis(-a.second, a.first));
         }
         sort(local.begin(), local.end());
-//        cout << local[0].first << " " << local[0].second << endl;
+        cout << local[0].first << " " << local[0].second << endl;
         top_backeries.push_back(local[0]);
         A[i][0] = 1.0 * cc.size() / M[i].size();
     }
@@ -89,6 +89,7 @@ void order(ostream& out, const vector<TVS>& M) {
     sort(top_backeries.begin(), top_backeries.end());
 
     int E = top_backeries.size();
+//    int E = 5;
 
     string origin = top_backeries[0].second;
     // Calculate distances from origin
@@ -111,7 +112,17 @@ void order(ostream& out, const vector<TVS>& M) {
     vector< vector<int> > X(M.size());
     for (int i = 0; i < M.size(); ++i) {
         for (int j = 0; j < M[i].size(); ++j) {
-            A[i][3] += 1.0 * calc_diff(origin, M[i][j]) / M[i].size();
+            double df = calc_diff(origin, M[i][j]);
+            if (df < 10) {
+                A[i][4] += 1;
+            }
+            if (df < 12) {
+                A[i][5] += 1;
+            }
+            if (df < 14) {
+                A[i][6] += 1;
+            }
+            A[i][3] += 1.0 * df / M[i].size();
             if (epoh.find(M[i][j]) != epoh.end()) {
                 A[i][2] = max(A[i][2], epoh[M[i][j]]);
                 X[i].push_back(epoh[M[i][j]]);
@@ -138,6 +149,7 @@ void order(ostream& out, const vector<TVS>& M) {
         cout << endl;
 //        r.push_back(pair<double, int> (-(1.0 / A[i][0] + 20. / max(20., A[i][2]) ), i) );
 //        r.push_back(pair<double, int> (-(100. / (A[i][2] < 1 ? 200 : A[i][2]) ), i) );
+        // SORT BY AVG DISTANCE TO origin
         r.push_back(pair<double, int> (A[i][3], i) );
     }
     sort(r.begin(), r.end());
@@ -159,12 +171,9 @@ void order(ostream& out, const vector<TVS>& M) {
             out << " ";
         }
         out << r[i].second;
-        
-        for (int f = 0; f < 4; ++f) {
-            if (f > 0) {
-                cout << " ";
-            }
-            cout << A[r[i].second][f];
+        cout << r[i].second;
+        for (int f = 0; f < 7; ++f) {
+            cout << " " << A[r[i].second][f];
         }
         cout << endl;
 
